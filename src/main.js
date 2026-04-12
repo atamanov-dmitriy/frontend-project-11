@@ -1,24 +1,41 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+import { proxy } from "valtio/vanilla";
+import * as yup from "yup";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./style.css";
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+const state = proxy({
+  feeds: [],
+});
 
-setupCounter(document.querySelector('#counter'))
+const formNode = document.querySelector("#rss-form");
+const inputNode = formNode.querySelector("#rss-form-input");
+const helperNode = formNode.querySelector("#rss-form-helper");
+
+inputNode.addEventListener("input", () => {
+  inputNode.classList.remove("is-valid", "is-invalid");
+  helperNode.classList.remove("text-success", "text-danger");
+  helperNode.textContent = "";
+});
+
+formNode.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  yup
+    .string()
+    .required('Не должно быть пустым')
+    .url('Ссылка должна быть валидным URL')
+    .notOneOf(state.feeds, 'RSS уже существует')
+    .validate(inputNode.value)
+    .then(() => {
+      state.feeds.push(inputNode.value);
+      inputNode.classList.add("is-valid");
+      helperNode.classList.add("text-success");
+      helperNode.textContent = "RSS успешно загружен";
+      inputNode.value = "";
+    })
+    .catch((error) => {
+      inputNode.classList.add("is-invalid");
+      helperNode.classList.add("text-danger");
+      helperNode.textContent = error.message;
+    });
+});

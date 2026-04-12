@@ -7,7 +7,51 @@
     <title>Vite App</title>
   </head>
   <body>
-    <div id="app"></div>
+    <header class="bg-dark text-white py-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <h1 class="display-4">RSS агрегатор</h1>
+
+            <p class="lead">
+              Начните читать RSS сегодня! Это легко, это красиво.
+            </p>
+
+            <form class="mt-3" id="rss-form">
+              <div class="row g-2">
+                <div class="col-md-9">
+                  <div class="form-floating">
+                    <input
+                      id="rss-form-input"
+                      name="url"
+                      type="text"
+                      class="form-control form-control-lg"
+                      placeholder="Ссылка RSS"
+                    />
+                    <label for="rss-form-input">Ссылка RSS</label>
+                  </div>
+                </div>
+
+                <div class="col-md-3 d-grid">
+                  <button type="submit" class="btn btn-primary btn-lg">
+                    Добавить
+                  </button>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-9">
+                  <div class="form-text text-white-50">
+                    Пример: https://lorem-rss.hexlet.app/feed
+                  </div>
+                  <p class="m-0 small" id="rss-form-helper"></p>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </header>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
