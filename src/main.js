@@ -6,6 +6,9 @@ import renderForm from './components/form.js'
 import renderModal from './components/modal.js'
 import renderPostsList from './components/posts-list.js'
 import renderFeedsList from './components/feeds-list.js'
+import { updateFeeds } from './utils.js'
+
+const FEEDS_UPDATE_INTERVAL = 5000
 
 const state = proxy({
   feeds: [],
@@ -23,3 +26,5 @@ subscribe(state, () => {
 })
 
 renderModal(state)
+
+updateFeeds(state, FEEDS_UPDATE_INTERVAL)

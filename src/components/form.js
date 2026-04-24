@@ -1,6 +1,6 @@
 import i18next from 'i18next'
 import * as yup from 'yup'
-import fetchRss from '../fetchRss'
+import { fetchRss } from '../utils'
 
 const renderForm = (state) => {
   const formNode = document.querySelector('#rss-form')

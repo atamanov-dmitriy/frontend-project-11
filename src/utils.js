@@ -3,7 +3,6 @@ import axios from 'axios'
 const getTextContent = (element, selector) => element.querySelector(selector)?.textContent?.trim() ?? ''
 
 const parseRss = (response) => {
-  console.log(response)
   const { contents, status } = response
   const parser = new DOMParser()
   const document = parser.parseFromString(contents, 'text/xml')
@@ -28,6 +27,7 @@ const parseRss = (response) => {
   const posts = Array.from(document.querySelectorAll('item'))
     .map(item => ({
       id: crypto.randomUUID(),
+      feedId: status.url,
       title: getTextContent(item, 'title'),
       description: getTextContent(item, 'description'),
       link: getTextContent(item, 'link'),
@@ -59,4 +59,27 @@ const fetchRss = url => axios
     throw new Error('from.error.network')
   })
 
-export default fetchRss
+const filterNewPosts = (state, feedUrl, posts) => {
+  const postsLinks = state.posts
+    .filter(post => post.feedId === feedUrl)
+    .map(post => post.link)
+
+  const newPosts = posts.filter(post => !postsLinks.includes(post.link))
+  if (newPosts.length > 0) {
+    state.posts.unshift(...newPosts)
+  }
+}
+
+const updateFeeds = (state, timeout) => {
+  setTimeout(() => {
+    const tasks = state.feeds.map(feed => fetchRss(feed.url)
+      .then(parsedFeed => filterNewPosts(state, feed.url, parsedFeed.posts))
+      .catch(() => null))
+
+    return Promise.allSettled(tasks).finally(() => {
+      updateFeeds(state, timeout)
+    })
+  }, timeout || 5000)
+}
+
+export { fetchRss, updateFeeds }
