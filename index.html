@@ -33,7 +33,11 @@
                 </div>
 
                 <div class="col-md-3 d-grid">
-                  <button type="submit" id="rss-form-button" class="btn btn-primary btn-lg">
+                  <button
+                    type="submit"
+                    id="rss-form-button"
+                    class="btn btn-primary btn-lg"
+                  >
                     Добавить
                   </button>
                 </div>
@@ -52,6 +56,112 @@
         </div>
       </div>
     </header>
+
+    <main class="flex-grow-1 py-5" id="rss-main">
+      <div class="container">
+        <div class="row g-4" id="rss-content-container"></div>
+      </div>
+    </main>
+
+    <template id="rss-posts-list-template">
+      <div class="col-12 col-lg-6" data-posts-container>
+        <div class="card border-0">
+          <div class="card-body">
+            <h2 class="h3 mb-0">${t('ui.postsHeader')}</h2>
+            <ul class="list-group list-group-flush mt-4" id="rss-posts-list"></ul>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="rss-posts-item-template">
+      <li
+        class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"
+      >
+        <a
+          href="${post.link}"
+          class="fw-bold"
+          data-id="${post.id}"
+          target="_blank"
+          rel="noopener noreferrer"
+          >${post.title}</a
+        >
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm"
+          data-id="${post.id}"
+          data-bs-toggle="modal"
+          data-bs-target="#modal"
+        >
+          ${i18nI.t('view')}
+        </button>
+      </li>
+    </template>
+
+    <template id="rss-feeds-list-template">
+      <div class="col-12 col-lg-6" data-feeds-container>
+        <div class="card border-0">
+          <div class="card-body">
+            <h2 class="h3 mb-0">${t('ui.feedsHeader')}</h2>
+            <ul class="list-group list-group-flush mt-4" id="rss-feeds-list"></ul>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="rss-feeds-item-template">
+      <li class="list-group-item border-0 border-end-0">
+        <h3 class="h6 m-0">${feed.title}</h3>
+        <p class="m-0 small text-black-50">${feed.description}</p>
+      </li>
+    </template>
+
+    <template id="rss-modal-template">
+      <div
+        class="modal fade"
+        id="modal"
+        tabindex="-1"
+        aria-labelledby="modalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3
+                class="modal-title fs-5"
+                id="modalLabel"
+                data-modal-title
+              ></h3>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="${t('ui.modalClose')}"
+              ></button>
+            </div>
+            <div class="modal-body" data-modal-description></div>
+            <div class="modal-footer">
+              <a
+                class="btn btn-primary"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-modal-read-full
+                >${t('ui.modalReadFull')}</a
+              >
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                ${t('ui.modalClose')}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

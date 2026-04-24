@@ -9,6 +9,13 @@ const ruLocale = {
       modalClose: 'Закрыть',
       modalReadFull: 'Читать полностью',
     },
+    feeds: {
+      title: 'Фиды',
+    },
+    posts: {
+      title: 'Посты',
+      button: 'Просмотр',
+    },
     form: {
       label: 'Ссылка RSS',
       ariaLabel: 'url',
