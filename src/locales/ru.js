@@ -1,6 +1,6 @@
 const ruLocale = {
   translation: {
-    ui: {
+    header: {
       title: 'RSS агрегатор',
       subtitle: 'Начните читать RSS сегодня! Это легко, это красиво.',
       feedsHeader: 'Фиды',
@@ -32,6 +32,10 @@ const ruLocale = {
         network: 'Ошибка сети',
         invalidRss: 'Ресурс не содержит валидный RSS',
       },
+    },
+    modal: {
+      close: 'Закрыть',
+      readFull: 'Читать полностью',
     },
   },
 }

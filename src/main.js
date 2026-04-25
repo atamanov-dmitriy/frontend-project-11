@@ -1,5 +1,6 @@
 import { proxy, snapshot, subscribe } from 'valtio/vanilla'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle'
 import './style.css'
 import './locales/index.js'
 import renderForm from './components/form.js'

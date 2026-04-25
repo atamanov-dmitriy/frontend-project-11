@@ -5,12 +5,15 @@ import { fetchRss } from '../utils'
 const renderForm = (state) => {
   const formNode = document.querySelector('#rss-form')
   const inputNode = formNode.querySelector('#rss-form-input')
-  const buttonNode = formNode.querySelector('#rss-form-button')
+  const buttonNode = formNode.querySelector('[type="submit"]')
   const helperNode = formNode.querySelector('#rss-form-helper')
 
   buttonNode.textContent = i18next.t('form.button')
   inputNode.placeholder = i18next.t('form.placeholder')
   inputNode.setAttribute('aria-label', i18next.t('form.ariaLabel'))
+
+  formNode.querySelector('[for="rss-form-input"]').textContent = i18next.t('form.label')
+  formNode.querySelector('.form-text').textContent = i18next.t('form.example')
 
   inputNode.addEventListener('input', () => {
     inputNode.classList.remove('is-valid', 'is-invalid')
