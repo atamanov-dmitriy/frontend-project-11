@@ -2,21 +2,23 @@ import i18next from 'i18next'
 import * as yup from 'yup'
 import { ruLocale } from './ru.js'
 
-i18next.init({
+const initI18n = () => i18next.init({
   lng: 'ru',
   resources: {
     ru: ruLocale,
   },
+}).then((i18n) => {
+  yup.setLocale({
+    mixed: {
+      required: i18n('form.validation.required'),
+      notOneOf: i18n('form.validation.duplicate'),
+    },
+    string: {
+      url: i18n('form.validation.url'),
+    },
+  })
+
+  return i18n
 })
 
-yup.setLocale({
-  mixed: {
-    required: i18next.t('form.validation.required'),
-    notOneOf: i18next.t('form.validation.duplicate'),
-  },
-  string: {
-    url: i18next.t('form.validation.url'),
-  },
-})
-
-export default i18next
+export { initI18n }

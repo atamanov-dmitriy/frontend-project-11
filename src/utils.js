@@ -2,32 +2,30 @@ import axios from 'axios'
 
 const getTextContent = (element, selector) => element.querySelector(selector)?.textContent?.trim() ?? ''
 
-const parseRss = (response) => {
-  const { contents, status } = response
+const parseRss = (response, url, i18n) => {
   const parser = new DOMParser()
-  const document = parser.parseFromString(contents, 'text/xml')
+  const document = parser.parseFromString(response.contents, 'text/xml')
 
   if (document.querySelector('parsererror')) {
-    throw new Error('from.error.invalidRss')
+    throw new Error(i18n('form.error.invalidRss'))
   }
 
   const channel = document.querySelector('channel')
 
   if (!channel) {
-    throw new Error('from.error.invalidRss')
+    throw new Error(i18n('form.error.invalidRss'))
   }
 
   const title = getTextContent(channel, 'title')
   const description = getTextContent(channel, 'description')
 
   if (!title) {
-    throw new Error('from.error.invalidRss')
+    throw new Error(i18n('form.error.invalidRss'))
   }
 
   const posts = Array.from(document.querySelectorAll('item'))
     .map(item => ({
-      id: crypto.randomUUID(),
-      feedId: status.url,
+      feedId: url,
       title: getTextContent(item, 'title'),
       description: getTextContent(item, 'description'),
       link: getTextContent(item, 'link'),
@@ -38,26 +36,22 @@ const parseRss = (response) => {
     feed: {
       title,
       description,
-      url: status.url,
+      url,
     },
     posts,
   }
 }
-
-const buildProxyUrl = (url) => {
-  const proxyUrl = new URL('https://allorigins.hexlet.app/get')
-  proxyUrl.searchParams.set('disableCache', 'true')
-  proxyUrl.searchParams.set('url', url)
-
-  return proxyUrl.toString()
-}
-
-const fetchRss = url => axios
-  .get(buildProxyUrl(url))
-  .then(response => parseRss(response.data))
-  .catch(() => {
-    throw new Error('from.error.network')
+const fetchRss = (url, i18n) => axios
+  .get('https://allorigins.hexlet.app/get', {
+    params: {
+      disableCache: true,
+      url,
+    },
   })
+  .catch(() => {
+    throw new Error(i18n('form.error.network'))
+  })
+  .then(response => parseRss(response.data, url, i18n))
 
 const filterNewPosts = (state, feedUrl, posts) => {
   const postsLinks = state.posts
@@ -70,14 +64,14 @@ const filterNewPosts = (state, feedUrl, posts) => {
   }
 }
 
-const updateFeeds = (state, timeout) => {
+const updateFeeds = (state, timeout, i18n) => {
   setTimeout(() => {
-    const tasks = state.feeds.map(feed => fetchRss(feed.url)
+    const tasks = state.feeds.map(feed => fetchRss(feed.url, i18n)
       .then(parsedFeed => filterNewPosts(state, feed.url, parsedFeed.posts))
       .catch(() => null))
 
     return Promise.allSettled(tasks).finally(() => {
-      updateFeeds(state, timeout)
+      updateFeeds(state, timeout, i18n)
     })
   }, timeout || 5000)
 }

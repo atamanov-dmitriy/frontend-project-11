@@ -4,10 +4,10 @@ import 'bootstrap/dist/js/bootstrap.bundle'
 import './style.css'
 import './locales/index.js'
 import renderForm from './components/form.js'
-import renderModal from './components/modal.js'
 import renderPostsList from './components/posts-list.js'
 import renderFeedsList from './components/feeds-list.js'
 import { updateFeeds } from './utils.js'
+import { initI18n } from './locales/index.js'
 
 const FEEDS_UPDATE_INTERVAL = 5000
 
@@ -16,16 +16,16 @@ const state = proxy({
   posts: [],
 })
 
-const contentContainerNode = document.querySelector('#rss-content-container')
-renderForm(state)
+initI18n().then((i18n) => {
+  const contentContainerNode = document.querySelector('#rss-content-container')
+  renderForm(state, i18n)
 
-subscribe(state, () => {
-  const snap = snapshot(state)
-  contentContainerNode.innerHTML = ''
-  renderPostsList(snap.posts, contentContainerNode, state)
-  renderFeedsList(snap.feeds, contentContainerNode)
+  subscribe(state, () => {
+    const snap = snapshot(state)
+    contentContainerNode.innerHTML = ''
+    renderPostsList(snap.posts, contentContainerNode, state, i18n)
+    renderFeedsList(snap.feeds, contentContainerNode, i18n)
+  })
+
+  updateFeeds(state, FEEDS_UPDATE_INTERVAL)
 })
-
-renderModal(state)
-
-updateFeeds(state, FEEDS_UPDATE_INTERVAL)
